@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/97e6f1480f.js" crossorigin="anonymous"></script>
+    <title>Gestão de Membros - APDIS</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Roboto Condensed", serif;
+            font-style: normal;
+        }
+
+        /* Gradiente de fundo */
+        body {
+            background: linear-gradient(to bottom, #2a2861, #213652, #282757);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Componentes da Página */
+        .container {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Logo */
+        .logo {
+            width: 100%; 
+            margin-bottom: 50px;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        /* Caixa de forms */
+        .login-box {
+            background-color: #ffffffcb;
+            width: 100%;
+            height: 100%;
+            padding: 2%;
+            border: 1px solid #9f9f9fc9;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeInUp 0.7s ease forwards;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Animação - Child 1 */
+        .login-box:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        /* Animação - Child 2 */
+        .login-box:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        /* Animação - Child 3 */
+        .login-box:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        /* Animação */
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Titulo forms */
+        .login-box h2 {
+            margin-bottom: 10px;
+            font-size: 180%;
+            color: #08065e;
+        }
+
+        /* Campos de formulário */
+        .login-box a {
+            padding: 0;
+            margin: 0;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .login-box a::-webkit-outer-spin-button,
+        .login-box a::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Estilos para o input quando está em foco */
+        .login-box a:hover {
+            cursor: pointer;
+            color: #070548;
+        }
+
+        #loginForm {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .requests-box {
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffffcb;
+            width: 100%;
+            height: 100%;
+            padding: 3%;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeInUp 0.7s ease forwards;
+        }
+
+        .request-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .request-text {
+            text-align: left;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 10px; /* Espaço entre os ícones */
+        }
+
+        .request-actions i {
+            cursor: pointer;
+            font-size: 1.2em;
+            color: #08065e;
+            transition: color 0.3s;
+        }
+
+        .request-actions i:hover {
+            color: #555;
+        }
+
+        /* Botões Submição */
+        .social-login {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .submit-btn {
+            background-color: #08065e;
+            color: #ffffff;
+            width: 100%;
+            height: 45px;
+            border: none;
+            border-radius: 8px;
+            font-size: 100%;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.5s;
+        }
+
+        .submit-btn:hover {
+            background-color: #070548;
+            border-radius: 12px;
+            font-size: 115%;
+            transition: all 0.5s;
+        }
+
+        #message {
+            padding-top: 20px;
+            font-weight: bolder;
+        }
+
+        .recovery {
+            margin-top: 20px;
+        }
+
+        .recovery a {
+            font-size: 2vh;
+            font-weight: bolder;
+            color: #08065e;
+            text-decoration: none;
+            transition: all 0.5s;
+        }
+
+        .recovery a:hover {
+            font-size: 2.05vh;
+            color: #070548;
+            transition: all 0.5s;
+        }
+    </style>
+</head>
+<body onload="CheckAdminSession()">
+    <div class="container">
+        <img class="logo" src="/logo" alt="Logo">
+        <div class="login-box">
+            <h2>Gestão de Membros</h2>
+            <div id="loginForm">
+                <div id="requests"></div>
+                <div class="social-login">
+                    <button onclick='window.location.href = "/admin";' class="submit-btn">Regressar</button>
+                </div>
+            </div>
+
+            <div id="message"></div>
+        </div>
+    </div>
+</body>
+<script src="/script"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", async function() {
+        const messageBox = document.getElementById('message');
+        const requests = document.getElementById("requests");
+
+        async function LoadAllMembers(members, user) {
+            if (!(user.type == "superadmin"||user.type == "admin")) {return;}
+            requests.replaceChildren();
+            members.forEach(member => {
+                if (member.number == user.associado || member.email == user.email) return;
+                /* Request Base */
+                const requestsbox = document.createElement("div");
+                requestsbox.classList.add("requests-box");
+                const requestsitem = document.createElement("div");
+                requestsitem.classList.add("request-item");
+                const requesttext = document.createElement("p");
+                requesttext.textContent = `${member.fullname} - Nº${member.number}`;
+
+                /* Request Actions */
+                const requestsactions = document.createElement("div");
+                requestsactions.classList.add("request-actions");
+            
+                
+                if (user.type == "superadmin") {
+                    if (member.type == "user") {
+                        /* Make Admin */
+                        const requestusertype = document.createElement("i");
+                        requestusertype.classList.add("fas", "fa-user-tie");
+                        requestusertype.style.cursor = "pointer";
+                        requestusertype.onclick = async () => {
+                            if (confirm("Tem certeza que deseja tornar este associado em Administrador?")) {
+                                try {
+                                    const response = await fetch("/api/members/adminMember", {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ id: member.id, number: member.number })
+                                    });
+
+                                    if (response.ok) {
+                                        member.type = "admin";
+                                        messageBox.textContent = 'Associado Tornado Administrador!';
+                                        messageBox.style.color = 'green';
+                                        LoadAllMembers(members, user);
+                                    } else {
+                                        messageBox.textContent = 'An error occurred. Please try again.';
+                                        messageBox.style.color = 'darkred';
+                                    }
+                                } catch (err) {
+                                    messageBox.textContent = 'An error occurred. Please try again.';
+                                    messageBox.style.color = 'darkred';
+                                }
+                            }
+                        };
+                        requestsactions.appendChild(requestusertype);
+                    } else if (member.type == "admin" || member.type == "superadmin") {
+                        /* Make User */
+                        const requestusertype = document.createElement("i");
+                        requestusertype.classList.add("fas", "fa-user");
+                        requestusertype.style.cursor = "pointer";
+                        requestusertype.onclick = async () => {
+                            if (confirm("Tem certeza que deseja tornar este associado em Membro?")) {
+                                try {
+                                    const response = await fetch("/api/members/unAdminMember", {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ id: member.id, number: member.number })
+                                    });
+
+                                    if (response.ok) {
+                                        member.type = "user";
+                                        messageBox.textContent = 'Associado Tornado Membro!';
+                                        messageBox.style.color = 'green';
+                                        LoadAllMembers(members, user);
+                                    } else {
+                                        messageBox.textContent = 'An error occurred. Please try again.';
+                                        messageBox.style.color = 'darkred';
+                                    }
+                                } catch (err) {
+                                    messageBox.textContent = 'An error occurred. Please try again.';
+                                    messageBox.style.color = 'darkred';
+                                }
+                            }
+                        };
+                        requestsactions.appendChild(requestusertype);
+                    }
+                }
+
+                if (member.type != "superadmin") {
+                    /* Request Reject */
+                    const requestremove = document.createElement("i");
+                    requestremove.classList.add("fas", "fa-trash-can");
+                    requestremove.style.cursor = "pointer";
+                    requestremove.onclick = async () => {
+                        if (confirm("Tem certeza que deseja apagar este associado?")) {
+                            try {
+                                const response = await fetch("/api/members/removeMember", {
+                                    method: 'DELETE',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ id: member.id, number: member.number })
+                                });
+
+                                if (response.ok) {
+                                    requestsbox.remove();
+                                    members = members.filter(r => r.id !== member.id || r.number !== member.number);
+                                    messageBox.textContent = 'Associado Removido com Sucesso!';
+                                    messageBox.style.color = 'green';
+                                    LoadAllMembers(members, user);
+                                } else {
+                                    messageBox.textContent = 'An error occurred. Please try again.';
+                                    messageBox.style.color = 'darkred';
+                                }
+                            } catch (err) {
+                                messageBox.textContent = 'An error occurred. Please try again.';
+                                messageBox.style.color = 'darkred';
+                            }
+                        }
+                    };
+                    requestsactions.appendChild(requestremove);
+                }
+
+                /* Request Join Everything */
+                requestsitem.appendChild(requesttext);
+                requestsitem.appendChild(requestsactions);
+                requestsbox.appendChild(requestsitem);
+                requests.appendChild(requestsbox);
+            });
+        }
+
+        try {
+            const response = await fetch("/api/members/getAllMembers", {
+                method: 'GET', 
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const members = await response.json();
+
+            if (response.ok) {
+                if (members.length == 0) {
+                    const norequesttext = document.createElement("h3");
+                    norequesttext.textContent = "Sem Registo de Membros.";
+                    requests.appendChild(norequesttext);
+                } else {
+                    const user = await validSession();
+                    LoadAllMembers(members, user);
+                }
+            } else {
+                messageBox.textContent = 'An error occurred. Please try again.';
+                messageBox.style.color = 'darkred';
+            }
+        } catch (error) {
+            console.error(error);
+            messageBox.textContent = 'An error occurred. Please try again.';
+            messageBox.style.color = 'darkred';
+        }
+    });
+</script>
+</html>

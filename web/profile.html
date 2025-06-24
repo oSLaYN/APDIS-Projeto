@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - APDIS</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Open+Sans:wght@400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Roboto Condensed", "Open Sans", sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2a2861, #213652, #282757);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo {
+            width: 80%;
+            margin-bottom: 20px;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .profile-box {
+            background-color: rgba(255, 255, 255, 0.9);
+            width: 85%;
+            padding: 20px 20px;
+            border: 1px solid rgba(159, 159, 159, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeInUp 0.7s ease forwards 0.2s;
+        }
+
+        .profile-box h2 {
+            font-size: 28px;
+            color: #08065e;
+            font-weight: 700;
+        }
+
+        .user-info {
+            text-align: left;
+        }
+
+        .user-info h3 {
+            color: #08065e;
+            font-size: 16px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .user-info p {
+            background-color: #797979c9;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #fff;
+            font-weight: 400;
+            border-left: 3px solid #08065e;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background-color: #08065e;
+            color: #ffffff;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #070548;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .recovery a {
+            font-size: 2vh;
+            font-weight: bolder;
+            color: #08065e;
+            text-decoration: none;
+            transition: all 0.5s;
+        }
+
+        .recovery a:hover {
+            text-decoration: none;
+            cursor: default;
+            font-size: 2.05vh;
+            color: #070548;
+            transition: all 0.5s;
+            cursor: pointer;
+        }
+
+        #message {
+            margin-top: 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .profile-box {
+                padding: 30px 20px;
+            }
+            
+            .profile-box h2 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+            
+            .user-info p {
+                padding: 10px 12px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body onload="CheckSessionAndProfile()">
+    <div class="container">
+        <img class="logo" src="/logo" alt="Logo APDIS">
+        
+        <div class="profile-box">
+            <h2>Perfil</h2>
+            
+            <div id="loginForm">
+                <div class="user-info">
+                    <h3>Nome Completo</h3>
+                    <p id="userFullName">N/A</p>
+                    
+                    <h3>E-Mail</h3>
+                    <p id="userEmail">N/A</p>
+                </div>
+                
+                <div class="button-container">
+                    <button onclick='window.location.href = "/";' class="btn">Regressar</button>
+                    <div class="recovery">
+                        <a onclick='Logout();'>Terminar Sessão</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="message"></div>
+        </div>
+    </div>
+</body>
+<script src="/script"></script>
+<script>
+    CheckSessionAndProfile = async function() {
+        const user = await validSession();
+        if (!user) {
+            const messageBox = document.getElementById("message");
+            messageBox.textContent = "Sem Sessão Iniciada! A Redirecionar...";
+            messageBox.style.color = '#e74c3c';
+            messageBox.style.backgroundColor = '#fde8e8';
+            
+            setTimeout(() => {
+                window.location.href = "/login";
+            }, 2500);
+            return;
+        }
+
+        document.getElementById("userFullName").textContent = user.fullname;
+        document.getElementById("userEmail").textContent = user.email;
+    }
+
+    Logout = async function() {
+        const messageBox = document.getElementById('message');
+        try {
+            const response = await fetch('/api/auth/logout', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            });
+
+            if (response.ok) {
+                document.cookie = 'clientToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+                messageBox.textContent = 'Logout Feito Com Sucesso! \nAguarde...';
+                messageBox.style.color = 'darkgreen';
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, "2500");
+            } else {
+                messageBox.textContent = 'An error occurred. Please try again.';
+                messageBox.style.color = 'darkred';
+            }             
+        } catch (error) {
+            console.error('Erro durante logout:', error);
+            alert('Ocorreu um erro ao fazer logout');
+        }
+
+    }
+</script>
+</html>

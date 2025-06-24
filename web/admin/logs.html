@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/97e6f1480f.js" crossorigin="anonymous"></script>
+    <title>Registo de Eventos - APDIS</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@100..900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Roboto Condensed", serif;
+            font-style: normal;
+        }
+
+        body {
+            background: linear-gradient(to bottom, #2a2861, #213652, #282757);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            padding-top: 1%;
+        }
+
+        .logo {
+            width: 240px; 
+            margin: 20px;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .search-container {
+            position: relative;
+            width: 80%;
+            max-width: 350px;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #08065e;
+            z-index: 1;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            outline: none;
+            position: relative;
+            background-color: #ffffffcb;
+            color: #08065e;
+            font-weight: 400;
+        }
+
+        .search-box::placeholder {
+            color:gray;
+            font-weight: bolder;
+        }
+
+        .container {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 80%;
+            max-width: 350px;
+            height: 70vh;
+            background-color: #ffffffcb;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+            padding: 10px;
+            position: relative;
+            margin-bottom: 0.25%;
+        }
+
+        .post {
+            background: #ffffffcb;
+            padding: 20px;
+            margin-bottom: 2%;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border: 1px solid #9f9f9fc9;
+            text-align: center;
+            width: 95%;
+        }
+
+        .post h3 {
+            color: #08065e;
+            margin-bottom: 5px;
+            font-size: 200%;
+        }
+
+        .post p {
+            color: #333;
+            font-size: 100%;
+        }
+
+        .social-login {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.25%;
+        }
+
+        .social-login .action-btn {
+            background-color: #ffffffcb;
+            color: #070548;
+            width: 10vh;
+            height: 4vh;
+            border: none;
+            border-radius: 5px;
+            font-size: 100%;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.5s;
+            padding: 1%;
+            margin: 2%;
+        }
+
+        .container .submit-btn {
+            background-color: #08065e;
+            color: #ffffff;
+            width: 100%;
+            height: 3.5vh;
+            border: none;
+            border-radius: 8px;
+            font-size: 100%;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.5s;
+            padding: 10px;
+            margin: 10px;
+        }
+
+        .social-login .submit-btn {
+            background-color: #ffffffcb;
+            color: #070548;
+            width: 20vh;
+            height: 4.5vh;
+            border: none;
+            border-radius: 8px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.5s;
+            padding: 1%;
+            margin: 10px;
+        }
+
+        .action-btn:hover, .submit-btn:hover {
+            font-size: 125%;
+            transition: all 0.5s;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 400px;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-content h2 {
+            color: #08065e;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: none;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn.submit {
+            background-color: #08065e;
+            color: white;
+        }
+
+        .modal-btn.cancel {
+            background-color: #818181c9;
+            color: white;
+        }
+
+        .modal-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body onload="CheckSession()">
+    <img class="logo" src="/logo" alt="Logo">
+    <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" class="search-box" placeholder="Pesquisar Logs">
+    </div>
+    <div class="container" id="feed"></div>
+    <div class="social-login">
+        <button onclick='window.location.href="/admin"' class="submit-btn">Regressar</button>
+    </div>
+    
+    <script src="/script"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async function() {
+            const feed = document.getElementById("feed");
+            const searchInput = document.querySelector('.search-box');
+
+            searchInput.addEventListener('input', handleSearch);
+    
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleSearch();
+                }
+            });
+
+            try {
+                const response = await fetch(`/api/members/getAllLogs`, {
+                    method: 'GET', 
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+
+                const logs = await response.json();
+
+                if (response.ok) {
+                    const user = await validSession();
+                    if (!(user.type == "superadmin"||user.type == "admin")) {return;}
+                    if (logs.length > 0) {
+                        document.title = `(${logs.length}) Logs - APDIS`;
+                        logs.reverse().forEach(log => {
+                            const post = document.createElement("div");
+                            post.classList.add("post");
+                            const formatedDate = (log.moment ? new Date(log.moment).toLocaleString('pt-PT') : 'Sem Registo de Data');
+                            post.innerHTML = `
+                                <p>${log.description}</p>
+                                <small>Momento: ${formatedDate}</small>
+                            `;
+                            feed.appendChild(post);
+                        });
+                    } else {
+                        const post = document.createElement("div");
+                        post.classList.add("post");
+                        post.innerHTML = `
+                            <h3>Sem Resultados</h3>
+                            <p>Nenhuma Log Foi Encontrada.</p>
+                        `;
+                        feed.appendChild(post);
+                    }
+                } else {
+                    console.error("ERROR");
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>

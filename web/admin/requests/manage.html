@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/97e6f1480f.js" crossorigin="anonymous"></script>
+    <title>Gestão de Pedidos - APDIS</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Roboto Condensed", serif;
+            font-style: normal;
+        }
+
+        /* Gradiente de fundo */
+        body {
+            background: linear-gradient(to bottom, #2a2861, #213652, #282757);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Componentes da Página */
+        .container {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Logo */
+        .logo {
+            width: 100%; 
+            margin-bottom: 50px;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        /* Caixa de forms */
+        .login-box {
+            background-color: #ffffffcb;
+            width: 100%;
+            height: 100%;
+            padding: 2%;
+            border: 1px solid #9f9f9fc9;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeInUp 0.7s ease forwards;
+        }
+
+        #loginForm {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Animação - Child 1 */
+        .login-box:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        /* Animação - Child 2 */
+        .login-box:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        /* Animação - Child 3 */
+        .login-box:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        /* Animação */
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Titulo forms */
+        .login-box h2 {
+            margin-bottom: 10px;
+            font-size: 180%;
+            color: #08065e;
+        }
+
+        /* Campos de formulário */
+        .login-box a {
+            padding: 0;
+            margin: 0;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .login-box a::-webkit-outer-spin-button,
+        .login-box a::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Estilos para o input quando está em foco */
+        .login-box a:hover {
+            cursor: pointer;
+            color: #070548;
+        }
+
+        .requests-box {
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffffcb;
+            width: 100%;
+            height: 100%;
+            padding: 3%;
+            border: 1px solid #9f9f9fc9;
+            border-radius: 12px;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeInUp 0.7s ease forwards;
+        }
+
+        .request-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .request-text {
+            text-align: left;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 10px; /* Espaço entre os ícones */
+        }
+
+        .request-actions i {
+            cursor: pointer;
+            font-size: 1.2em;
+            color: #08065e;
+            transition: color 0.3s;
+        }
+
+        .request-actions i:hover {
+            color: #555;
+        }
+
+        /* Botões Submição */
+        .social-login {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .submit-btn {
+            background-color: #08065e;
+            color: #ffffff;
+            width: 100%;
+            height: 45px;
+            border: none;
+            border-radius: 8px;
+            font-size: 100%;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.5s;
+        }
+
+        .submit-btn:hover {
+            background-color: #070548;
+            border-radius: 12px;
+            font-size: 115%;
+            transition: all 0.5s;
+        }
+
+        #message {
+            padding-top: 20px;
+            font-weight: bolder;
+        }
+
+        .recovery {
+            margin-top: 20px;
+        }
+
+        .recovery a {
+            font-size: 2vh;
+            font-weight: bolder;
+            color: #08065e;
+            text-decoration: none;
+            transition: all 0.5s;
+        }
+
+        .recovery a:hover {
+            font-size: 2.05vh;
+            color: #070548;
+            transition: all 0.5s;
+        }
+    </style>
+</head>
+<body onload="CheckAdminSession()">
+    <div class="container">
+        <img class="logo" src="/logo" alt="Logo">
+        <div class="login-box">
+            <h2>Gerir Pedidos</h2>
+            <div id="loginForm">
+                <div id="requests"></div>
+                <div class="social-login">
+                    <button onclick='window.location.href = "/admin";' class="submit-btn">Regressar</button>
+                </div>
+            </div>
+
+            <div id="message"></div>
+        </div>
+    </div>
+</body>
+<script src="/script"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", async function() {
+        const messageBox = document.getElementById('message');
+        const requests = document.getElementById("requests");
+
+        async function LoadAllRegisters(requestList, user) {
+            if (!(user.type == "superadmin"||user.type == "admin")) {return;}
+            requests.replaceChildren();
+            if (requestList.length == 0) {
+                const norequesttext = document.createElement("h3");
+                norequesttext.textContent = "Sem Pedido de Registos.";
+                requests.appendChild(norequesttext);
+            } else {
+                requestList.forEach(request => {
+                    /* Request Base */
+                    const requestsbox = document.createElement("div");
+                    requestsbox.classList.add("requests-box");
+                    requestsbox.id = `request-${request.id}-${request.requested}`;
+                    
+                    const requestsitem = document.createElement("div");
+                    requestsitem.classList.add("request-item");
+                    const requesttext = document.createElement("p");
+                    requesttext.textContent = `Nº${request.id} - ${request.description}`;
+
+                    /* Request Actions */
+                    const requestsactions = document.createElement("div");
+                    requestsactions.classList.add("request-actions");
+
+                    /* Request Approve */
+                    if (request.accepted && request.documentName) {
+                        const requestback = document.createElement("i");
+                        requestback.classList.add("fas", "fa-clock-rotate-left");
+                        requestback.style.cursor = "pointer";
+                        requestback.onclick = async () => {
+                            if (confirm("Tem certeza que deseja reverter este pedido?")) {
+                                try {
+                                    const response = await fetch("/api/documents/recoverRequest", {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ id: request.id })
+                                    });
+
+                                    if (response.ok) {
+                                        messageBox.textContent = 'Pedido Revertido com Sucesso!';
+                                        messageBox.style.color = 'green';
+                                        request.accepted = null
+                                        request.documentName = null
+                                        LoadAllRegisters(requestList);
+                                    } else {
+                                        messageBox.textContent = 'Ocorreu um erro. Por favor, tente novamente.';
+                                        messageBox.style.color = 'darkred';
+                                    }
+                                } catch (err) {
+                                    messageBox.textContent = 'Ocorreu um erro. Por favor, tente novamente.';
+                                    messageBox.style.color = 'darkred';
+                                }
+                            }
+                        };
+                        requestsactions.appendChild(requestback);
+                    }
+
+                    /* Request Delete */
+                    const requestdelete = document.createElement("i");
+                    requestdelete.classList.add("fas", "fa-trash-can");
+                    requestdelete.style.cursor = "pointer";
+                    requestdelete.onclick = async () => {
+                        if (confirm("Tem certeza que deseja apagar este pedido?")) {
+                            try {
+                                const queryParams = new URLSearchParams().toString();
+                                const response = await fetch("/api/documents/deleteRequest", {
+                                    method: 'DELETE',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ id: request.id })
+                                });
+
+                                if (response.ok) {
+                                    requestsbox.remove();
+                                    requestList = requestList.filter(r => r.id !== request.id || r.number !== request.number);
+                                    messageBox.textContent = 'Registo Rejeitado com Sucesso!';
+                                    messageBox.style.color = 'green';
+                                } else {
+                                    messageBox.textContent = 'Ocorreu um erro. Por favor, tente novamente.';
+                                    messageBox.style.color = 'darkred';
+                                }
+                            } catch (err) {
+                                messageBox.textContent = 'Ocorreu um erro. Por favor, tente novamente.';
+                                messageBox.style.color = 'darkred';
+                            }
+                        }
+                    };
+
+                    /* Request Join Everything */
+                    requestsactions.appendChild(requestdelete);
+                    requestsitem.appendChild(requesttext);
+                    requestsitem.appendChild(requestsactions);
+                    requestsbox.appendChild(requestsitem);
+                    requests.appendChild(requestsbox);
+                });
+            }
+        }
+
+        try {
+            const response = await fetch("/api/documents/getAllRequests", {
+                method: 'GET', 
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const requestList = await response.json();
+            if (response.ok) {
+                const user = await validSession();
+                LoadAllRegisters(requestList, user);
+            } else {
+                messageBox.textContent = `Error: ${requestList.message}`;
+                messageBox.style.color = 'darkred';
+            }
+        } catch (error) {
+            console.error(error);
+            messageBox.textContent = 'An error occurred. Please try again.';
+            messageBox.style.color = 'darkred';
+        }
+    });
+</script>
+</html>

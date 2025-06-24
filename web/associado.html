@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ser Associado - APDIS</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Roboto Condensed", serif;
+            font-style: normal;
+        }
+
+        /* Gradiente de fundo */
+        body {
+            background: linear-gradient(to bottom, #2a2861, #213652, #282757);
+            display: flex;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Componentes da Página */
+        .container {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            margin: 0% 40% 0% 40%;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                display: flex;
+                flex-direction: column;
+                text-align: center;
+                align-items: center;
+                justify-content: center;
+                margin: 0px 20% 0% 17.5%;
+            }
+        }
+
+        /* Logo */
+        .logo {
+            width: 240px; 
+            margin: 20px;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        /* Caixa de forms */
+        .dadospessoais, .dadosinstiuicao {
+            background-color: #ffffffcb;
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            border: 1px solid #9f9f9fc9;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeInUp 0.7s ease forwards;
+            margin-top: 10px;
+            padding: 15px;
+        }
+
+        #conteudoInstituicao {
+            display: none;
+        }
+
+        .dadosinstiuicao.visible #conteudoInstituicao {
+            display: block;
+        }
+
+        .dadosinstiuicao a {
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            display: flex;
+        }
+        .dadosinstiuicao a p {
+            padding-left: 1.5%;
+            font-size: 14px;
+        }
+
+        #dadosinstiuicao {
+            font-size: 20px !important;
+            margin-right: 10px;
+        }
+
+        /* Animação - Child 1 */
+        .login-box:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        /* Animação - Child 2 */
+        .login-box:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        /* Animação - Child 3 */
+        .login-box:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        /* Animação */
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Titulo forms */
+        .dadosinstiuicao h2, .dadospessoais h2 {
+            padding: 0;
+            margin-bottom: 5px;
+            font-size: 180%;
+            color: #08065e;
+        }
+
+        /* Campos de formulário */
+        .login-box input, .login-box select {
+            width: 100%;
+            padding: 10px;
+            margin: 2px 0;
+            border: 2px solid #9f9f9fc9;
+            border-radius: 12px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .login-box input::-webkit-outer-spin-button,
+        .login-box input::-webkit-inner-spin-button,
+        .login-box select::-webkit-outer-spin-button,
+        .login-box select::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .login-box input {
+            -moz-appearance: textfield;
+        }
+
+        /* Estilos para o input quando está em foco */
+        .login-box input:focus, .login-box select:focus {
+            border-color: #070548;
+        }
+
+        /* Botões Submição */
+        .social-login {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .submit-btn {
+            background-color: #08065e;
+            color: #ffffff;
+            width: 100%;
+            height: 45px;
+            border: none;
+            border-radius: 8px;
+            font-size: 100%;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.5s;
+        }
+
+        .submit-btn:hover {
+            background-color: #070548;
+            border-radius: 12px;
+            font-size: 115%;
+            transition: all 0.5s;
+        }
+
+        #message {
+            padding-top: 20px;
+            font-weight: bolder;
+        }
+
+        .recovery {
+            margin-top: 10px;
+        }
+
+        .recovery a {
+            font-size: 2vh;
+            font-weight: bolder;
+            color: #08065e;
+            text-decoration: none;
+            transition: all 0.5s;
+        }
+
+        .recovery a:hover {
+            text-decoration: none;
+            cursor: default;
+            font-size: 2.05vh;
+            color: #070548;
+            transition: all 0.5s;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body onload="">
+    <div class="container">
+        <img class="logo" src="/logo" alt="Logo">
+        <div class="login-box">
+            <form id="loginForm">
+                <div class="dadosinstiuicao" onclick="toggleDadosInstituicao()">
+                    <a><p id="dadosinstiuicao">▶</p> <h2>Dados da Instituição</h2> <small>(OPCIONAL)</small></a>
+                    <div id="conteudoInstituicao">
+                        <input id="instituicao" type="text" placeholder="Instituição">
+                        <input id="email" type="email" placeholder="E-Mail">
+                        <input id="endereco" type="text" placeholder="Endereço">
+                        <input id="localidade" type="text" placeholder="Localidade">
+                        <input id="codpostal" name="codpostal" type="text" pattern="\d{4}-\d{3}" placeholder="0000-000" oninput="this.value=this.value.replace(/\D/g,'');if(this.value.length>4)this.value=this.value.slice(0,4)+'-'+this.value.slice(4,7)">
+                        <input id="funcao" type="text" placeholder="Função">
+                    </div>
+                </div>
+                <div class="dadospessoais">
+                    <h2>Dados Pessoais</h2>
+                    <input id="nome" type="text" placeholder="Nome Completo" required>
+                    <input id="emailPessoal" type="email" placeholder="E-Mail" required>
+                    <input id="nif" type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="9" placeholder="NIF" required>
+                    <input id="enderecoPessoal" type="text" placeholder="Endereço" required>
+                    <input id="localidadePessoal" type="text" placeholder="Localidade" required>
+                    <input id="codpostalPessoal" type="text" pattern="\d{4}-\d{3}" placeholder="0000-000" required oninput=" this.value = this.value.replace(/\D/g, ''); if (this.value.length > 4) this.value = this.value.slice(0, 4) + '-' + this.value.slice(4, 7)">
+                    <input id="telefone" type="tel" inputmode="numeric" pattern="(91|92|93|96)[0-9]{7}" min="910000000" max="969999999" maxlength="9" placeholder="912345678" required oninput="this.value=this.value.replace(/\D/g,'').slice(0,9)" onblur="if(!/^(91|92|93|96)/.test(this.value)){this.setCustomValidity('Número de Telemóvel Inválido.')}">
+                    <select id="tipo" type="select" placeholder="Tipo" required>
+                        <option value="aderente">Associado Aderente - Outros profissionais ligados à área da saúde</option>
+                        <option value="coletivo">Associado Coletivo - Instituições ligadas à área da saúde</option>
+                        <option value="efetivo">Associado Efetivo - Profissionais de informação na área da saúde</option>
+                    </select>
+                    <input id="habliterarias" type="text" placeholder="Habilitações Literárias">
+                    <div class="social-login">
+                        <button type="submit" class="submit-btn">Fazer Pedido</button>
+                        <div class="recovery">
+                            <a onclick='window.location.href = "/login";'>Regressar</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div id="message"></div>
+        </div>
+    </div>
+</body>
+<script src="/script"></script>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const messageBox = document.getElementById('message');
+        /* COISAS PESSOAIS */
+        const nome = document.getElementById('nome').value;
+        const emailPessoal = document.getElementById('emailPessoal').value;
+        const nif = document.getElementById('nif').value;
+        const enderecoPessoal = document.getElementById('enderecoPessoal').value;
+        const localidadePessoal = document.getElementById('localidadePessoal').value;
+        const codPostalPessoal = document.getElementById('codpostalPessoal').value;
+        const telefone = document.getElementById('telefone').value;
+        const habliterarias = document.getElementById('habliterarias').value;
+        const tipo = document.getElementById('tipo').options[document.getElementById('tipo').selectedIndex].text;
+
+        /* COISAS INSTITUIÇÃO */
+        const instituicao = document.getElementById('instituicao').value;
+        const email = document.getElementById('email').value;
+        const endereco = document.getElementById('endereco').value;
+        const localidade = document.getElementById('localidade').value;
+        const codpostal = document.getElementById('codpostal').value;
+        const funcao = document.getElementById('funcao').value;
+
+        try {
+            const response = await fetch("/api/members/pedidoAssociado", {
+                method: 'POST', 
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                include: 'credentials',
+                body: JSON.stringify({pessoal: {nome, emailPessoal, nif, enderecoPessoal, localidadePessoal, codPostalPessoal, telefone, tipo, habliterarias}, instituicao: {instituicao, email, endereco, localidade, codpostal, funcao}})
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                messageBox.textContent = 'Pedido de Associado Enviado. \nAguarde Pela Resposta do Responsável!';
+                messageBox.style.color = 'darkgreen';
+                setTimeout(() => {
+                        window.location.href = "/login";
+                    }, "2500");
+            } else {
+                messageBox.textContent = `Error: ${result.message}`;
+                messageBox.style.color = 'darkred';
+            }
+        } catch (error) {
+            messageBox.textContent = `An Error Occurred: ${error}`;
+            messageBox.style.color = 'darkred';
+        }
+    });
+</script>
+</html>

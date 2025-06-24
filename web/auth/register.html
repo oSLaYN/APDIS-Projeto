@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registo - APDIS</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Roboto Condensed", serif;
+            font-style: normal;
+        }
+
+        /* Gradiente de fundo */
+        body {
+            background: linear-gradient(to bottom, #2a2861, #213652, #282757);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Componentes da Página */
+        .container {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Logo */
+        .logo {
+            width: 240px; 
+            margin-bottom: 50px;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        /* Caixa de forms */
+        .login-box {
+            background-color: #ffffffcb;
+            width: 85%;
+            max-width: 350px;
+            height: auto;
+            padding: 2%;
+            border: 1px solid #9f9f9fc9;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeInUp 0.7s ease forwards;
+        }
+
+        /* Animação - Child 1 */
+        .login-box:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        /* Animação - Child 2 */
+        .login-box:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        /* Animação - Child 3 */
+        .login-box:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        /* Animação */
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-box h2 {
+            margin-bottom: 10px;
+            font-size: 200%;
+            color: #08065e;
+        }
+
+        .login-box input, .login-box select {
+            width: 100%;
+            padding: 10px;
+            margin: 2px 0;
+            border: 2px solid #9f9f9fc9;
+            border-radius: 12px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .login-box input::-webkit-outer-spin-button,
+        .login-box input::-webkit-inner-spin-button,
+        .login-box select::-webkit-outer-spin-button,
+        .login-box select::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .login-box input {
+            -moz-appearance: textfield;
+        }
+
+        .login-box input:focus, .login-box select:focus {
+            border-color: #070548;
+        }
+
+        .social-login {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px;
+            gap: 10px;
+        }
+
+        .submit-btn {
+            background-color: #08065e;
+            color: #ffffff;
+            width: 100%;
+            height: 45px;
+            border: none;
+            border-radius: 8px;
+            font-size: 100%;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.5s;
+        }
+
+        .submit-btn:hover {
+            background-color: #070548;
+            border-radius: 12px;
+            font-size: 115%;
+            transition: all 0.5s;
+        }
+
+        #message {
+            padding-top: 10px;
+            font-weight: bolder;
+        }
+
+        .recovery {
+            margin-top: 10px;
+        }
+
+        .recovery a {
+            font-size: 2vh;
+            font-weight: bolder;
+            color: #08065e;
+            text-decoration: none;
+            transition: all 0.5s;
+        }
+
+        .recovery a:hover {
+            font-size: 2.05vh;
+            color: #070548;
+            transition: all 0.5s;
+        }
+    </style>
+</head>
+<body onload="CheckSession()">
+    <div class="container">
+        <img class="logo" src="/logo" alt="Logo">
+        <div class="login-box">
+            <h2>Registo</h2>
+            <form id="loginForm">
+                <input id="associado" type="number" placeholder="Nº Associado" required>
+                <input id="nome" type="text" placeholder="Nome e Apelido" required>
+                <input id="email" type="text" placeholder="E-Mail" required>
+                <input id="unidsaude" type="text" placeholder="Unidade de Saúde">
+                <input id="cargo" type="text" placeholder="Cargo na Unidade">
+                <div class="social-login">
+                    <button type="submit" class="submit-btn">Registar</button>
+                    <button type="submit" class="submit-btn" onclick="window.location.href='/login'">Regressar</button>
+                </div>
+                <div class="recovery">
+                    <a href="/associado">Tornar-se Associado</a>
+                </div>
+            </form>
+
+            <div id="message"></div>
+        </div>
+    </div>
+</body>
+<script src="/script"></script>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const messageBox = document.getElementById('message');
+        const associado = document.getElementById('associado').value;
+        const nome = document.getElementById('nome').value;
+        const email = document.getElementById('email').value;
+        var unidsaude = document.getElementById('unidsaude').value;
+        var cargo = document.getElementById('cargo').value;
+
+        if (!unidsaude) unidsaude = "Nenhuma"
+        if (!cargo) cargo = "Nenhum"
+
+        try {
+            const response = await fetch("/api/auth/register", {
+                method: 'POST', 
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ associado, email, nome, unidsaude, cargo })
+            });
+
+            const result = await response.json();
+           
+            messageBox.textContent = result.message;
+            if (response.ok) {
+                messageBox.style.color = 'darkgreen';
+                setTimeout(() => {
+                    window.location.href = "/login";
+                }, "2500");
+            } else {
+                messageBox.style.color = 'darkred';
+            }
+        } catch (error) {
+            messageBox.textContent = 'Ocorreu um Erro, Tente Novamente.';
+            messageBox.style.color = 'darkred';
+        }
+    });
+</script>
+</html>

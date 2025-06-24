@@ -1,0 +1,946 @@
+openapi: 3.0.4
+info:
+  title: APDIS - Rotas API
+  description: |-
+    Representação da arquitetura REST da plataforma APDIS, desenvolvida no âmbito da unidade curricular de Projeto de Software Web, Móvel e na Nuvem.
+    Neste documento será possível observar as rotas existentes, os campos necessários e respostas esperadas.
+  version: 1.0.0
+servers:
+  - url: https://projeto.matz.pt/api
+tags:
+  - name: auth
+    description: API de Autenticação
+  - name: documents
+    description: API de Documentos
+  - name: members
+    description: API de Membros e Gestão
+paths:
+  /auth/isAuthorized:
+    get:
+      tags:
+        - auth
+      summary: Verifica a Sessão do Utilizador.
+      description: Valida a Sessão do Utilizador Verificando se Existe.
+      parameters:
+        - name: clientToken
+          in: header
+          description: Cookie Válida do Utilizador Após o Login
+          required: true
+          schema:
+            type: string
+            default: 
+      responses:
+        '200':
+          description: Utilizador Válido.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  associado:
+                    type: integer
+                    example: 10
+                  fullname:
+                    type: string
+                    example: "Artur Finato"
+                  email:
+                    type: string
+                    example: "artur.finato@example.com"
+                  type:
+                    type: string
+                    example: "user"
+        '400':
+          description: Utilizador Inválido
+  /auth/login:
+    post:
+      tags:
+        - auth
+      summary: Realiza a Tentativa do Pedido de Autenticação.
+      description: Realiza o Pedido de Autenticação com o Número de Associado e Password.
+      requestBody:
+        description: Realiza a Tentativa do Pedido de Autenticação
+        content:
+          application/json:
+            schema:
+              required:
+                - associado
+                - password
+              type: object
+              properties:
+                associado:
+                  type: integer
+                  format: int64
+                  example: 10
+                password:
+                  type: string
+                  example: password
+        required: true
+      responses:
+        '200':
+          description: Autenticação Realizada com Sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Utilizador Autenticado com Sucesso."
+        '400':
+          description: Credenciais Inválidas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Credenciais Inválidas."
+        '500':
+          description: Ocorreu um Erro
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Ocorreu um Erro: ERRO"
+  /auth/register:
+    post:
+      tags:
+        - auth
+      summary: Realiza a Tentativa do Pedido de Registo.
+      description: Realiza a Tentativa do Pedido de Registo com o Número de Associado, E-Mail, Nome Completo, Unidade de Saúde e Cargo.
+      requestBody:
+        description: Realiza a Tentativa do Pedido de Registo
+        content:
+          application/json:
+            schema:
+              required:
+                - associado
+                - email
+                - nome
+                - unidsaude
+                - cargo
+              type: object
+              properties:
+                associado:
+                  type: integer
+                  format: int64
+                  example: 10
+                email:
+                  type: string
+                  example: "artur.finato@example.com"
+                nome:
+                  type: string
+                  example: "Artur Finato"
+                unidsaude:
+                  type: string
+                  example: "Cova da Beira"
+                cargo:
+                  type: string
+                  example: "Médico"
+        required: true
+      responses:
+        '200':
+          description: Pedido de Registo Realizado com Sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Pedido de Registo Enviado. \nAguarde Pela Confirmação do Responsável!"
+        '400':
+          description: Pedido Já Existente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Já Existe um Pedido com Esses Dados."
+        '500':
+          description: Credenciais Já Existentes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Credenciais Já Existentes na Plataforma."
+  /auth/password-reset:
+    post:
+      tags:
+        - auth
+      summary: Realiza a Tentativa do Pedido de Resetar a Password.
+      description: Realiza a Tentativa do Pedido de Resetar a Password com o E-Mail.
+      requestBody:
+        description: Realiza a Tentativa do Pedido de Resetar a Password
+        content:
+          application/json:
+            schema:
+              required:
+                - email
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "artur.finato@example.com"
+        required: true
+      responses:
+        '200':
+          description: Pedido de Reset da Password com Sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "E-Mail de Recuperação de Password Enviado."
+        '400':
+          description: E-Mail Não Encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "E-Mail Não Encontrado."
+        '500':
+          description: Ocorreu um Erro
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Ocorreu um Erro: ERRO"
+  /auth/password-set:
+    post:
+      tags:
+        - auth
+      summary: Realiza a Tentativa do Pedido de Atualização da Password.
+      description: Realiza a Tentativa do Pedido de Atualização da Password com o Token.
+      requestBody:
+        description: Realiza a Tentativa do Pedido de Atualização da Password com o Token.
+        content:
+          application/json:
+            schema:
+              required:
+                - token
+                - password
+              type: object
+              properties:
+                token:
+                  type: string
+                  example: "A8X4A6"
+                password:
+                  type: string
+                  example: password
+        required: true
+      responses:
+        '200':
+          description: Pedido de Atualização da Password com Sucesso 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Password Atualizada com Sucesso."
+        '400':
+          description: E-Mail Não Encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "E-Mail Não Encontrado."
+        '500':
+          description: Password Fraca
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Password Não é Forte o Suficiente."
+  /auth/logout:
+    post:
+      tags:
+        - auth
+      summary: Limpa a Sessão do Utilizador.
+      description: Limpa a Sessão do Utilizador Realizando Logout.
+      parameters:
+        - name: clientToken
+          in: header
+          description: Cookie Válida do Utilizador Após o Login
+          required: true
+          schema:
+            type: string
+            example:
+      responses:
+        '200':
+          description: Logout Feito com Sucesso. 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Logout Feito com Sucesso!"
+        '500':
+          description: Ocorreu um Erro
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Ocorreu um Erro: ERRO"
+  /documents/getAllRequests:
+    get:
+      tags:
+        - documents
+      summary: Obter todos os Pedidos
+      description: Obtém a lista de todos os pedidos existentes.
+      responses:
+        '200':
+          description: Lista de pedidos obtida com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    description:
+                      type: string
+                    requested:
+                      type: string
+                    accepted:
+                      type: integer
+                      nullable: true
+                    documentName:
+                      type: string
+                      nullable: true
+                    documentDOI:
+                      type: string
+                      nullable: true
+                    documentData:
+                      type: string
+                      nullable: true
+        '400':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Não Autorizado."
+
+  /documents/getRequest:
+    get:
+      tags:
+        - documents
+      summary: Obter um Pedido pelo ID
+      description: Retorna os detalhes de um pedido específico.
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID do pedido a obter
+      responses:
+        '200':
+          description: Pedido obtido com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: ID de pedido inválido ou não autorizado
+        '500':
+          description: Erro interno
+
+  /documents/createRequest:
+    post:
+      tags:
+        - documents
+      summary: Criar um novo Pedido
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - description
+              properties:
+                description:
+                  type: string
+      responses:
+        '200':
+          description: Pedido criado com sucesso
+        '400':
+          description: Dados inválidos ou não autorizado
+        '500':
+          description: Erro interno
+
+  /documents/acceptRequest:
+    post:
+      tags:
+        - documents
+      summary: Aceitar um Pedido
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - id
+                - file
+              properties:
+                id:
+                  type: integer
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Pedido aceite e documento enviado
+        '400':
+          description: Dados inválidos ou não autorizado
+        '500':
+          description: Erro interno
+
+  /documents/recoverRequest:
+    post:
+      tags:
+        - documents
+      summary: Reverter um Pedido Aceite
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+              properties:
+                id:
+                  type: integer
+      responses:
+        '200':
+          description: Pedido revertido com sucesso
+        '400':
+          description: Não autorizado ou ID inválido
+        '500':
+          description: Erro interno
+
+  /documents/deleteRequest:
+    delete:
+      tags:
+        - documents
+      summary: Apagar um Pedido
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+              properties:
+                id:
+                  type: integer
+      responses:
+        '200':
+          description: Pedido apagado com sucesso
+        '400':
+          description: Não autorizado ou ID inválido
+        '500':
+          description: Erro interno
+
+  /documents/downloadRequest:
+    get:
+      tags:
+        - documents
+      summary: Download de Documento associado a um Pedido
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID do pedido
+      responses:
+        '200':
+          description: Download iniciado com sucesso
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Não autorizado ou ID inválido
+        '404':
+          description: Documento ou ficheiro não encontrado
+        '500':
+          description: Erro interno
+  /members/getAllMembers:
+    get:
+      tags:
+        - members
+      summary: Obtém todos os membros exceto o próprio utilizador autenticado.
+      description: Retorna uma lista de todos os utilizadores registados na plataforma, excluindo o próprio.
+      responses:
+        '200':
+          description: Lista de membros
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    number:
+                      type: string
+                    fullname:
+                      type: string
+                    email:
+                      type: string
+                    type:
+                      type: string
+        '400':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Não Autorizado."
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Ocorreu um Erro: [detalhes]"
+
+  /members/getAllRegisters:
+    get:
+      tags:
+        - members
+      summary: Obtém todos os pedidos de registo de associados.
+      description: Retorna uma lista de todos os registos pendentes na tabela de requests.
+      responses:
+        '200':
+          description: Lista de registos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '400':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Não Autorizado."
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Ocorreu um Erro: [detalhes]"
+
+  /members/approveRegister:
+    post:
+      tags:
+        - members
+      summary: Aprova um pedido de registo.
+      description: Aprova o registo de um associado com base no ID e Número fornecidos.
+      requestBody:
+        description: Dados necessários para aprovar o pedido.
+        content:
+          application/json:
+            schema:
+              required:
+                - id
+                - number
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 5
+                number:
+                  type: string
+                  example: "A105"
+        required: true
+      responses:
+        '200':
+          description: Pedido aprovado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Utilizador Aceite."
+        '400':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Não Autorizado."
+        '500':
+          description: Erro interno ou registo não encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Ocorreu um Erro."
+
+  /members/rejectRegister:
+    delete:
+      tags:
+        - members
+      summary: Rejeita um pedido de registo.
+      description: Remove o pedido de um associado com base no ID e Número fornecidos.
+      requestBody:
+        description: Dados necessários para rejeitar o pedido.
+        content:
+          application/json:
+            schema:
+              required:
+                - id
+                - number
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 7
+                number:
+                  type: string
+                  example: "A107"
+        required: true
+      responses:
+        '200':
+          description: Pedido rejeitado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Utilizador Rejeitado."
+        '400':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Não Autorizado."
+        '500':
+          description: Erro interno ou registo não encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Ocorreu um Erro."
+
+  /members/adminMember:
+    post:
+      tags:
+        - members
+      summary: Torna um associado administrador.
+      description: Altera o tipo de um associado para "admin".
+      requestBody:
+        description: Dados do associado a promover.
+        content:
+          application/json:
+            schema:
+              required:
+                - id
+                - number
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 12
+                number:
+                  type: string
+                  example: "A120"
+        required: true
+      responses:
+        '200':
+          description: Utilizador promovido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Utilizador é Agora Administrador."
+        '400':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Não Autorizado."
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Ocorreu um Erro."
+
+  /members/unAdminMember:
+    post:
+      tags:
+        - members
+      summary: Remove permissões de administrador.
+      description: Altera o tipo de um associado de "admin" para "user".
+      requestBody:
+        description: Dados do associado a rebaixar.
+        content:
+          application/json:
+            schema:
+              required:
+                - id
+                - number
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 13
+                number:
+                  type: string
+                  example: "A121"
+        required: true
+      responses:
+        '200':
+          description: Utilizador atualizado para "user"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Utilizador Já Não é Administrador."
+        '400':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Não Autorizado."
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Ocorreu um Erro."
+
+  /members/removeMember:
+    delete:
+      tags:
+        - members
+      summary: Remove um associado da plataforma.
+      description: Elimina permanentemente um associado com base no ID e Número.
+      requestBody:
+        description: Dados do associado a remover.
+        content:
+          application/json:
+            schema:
+              required:
+                - id
+                - number
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 10
+                number:
+                  type: string
+                  example: "A110"
+        required: true
+      responses:
+        '200':
+          description: Associado removido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Utilizador Apagado com Sucesso."
+        '400':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Não Autorizado."
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Ocorreu um Erro."
+
+  /members/getAllLogs:
+    get:
+      tags:
+        - members
+      summary: Obtém todos os logs da plataforma.
+      description: Retorna todas as entradas de logs de atividade.
+      responses:
+        '200':
+          description: Lista de logs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '400':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Não Autorizado."
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Ocorreu um Erro."
+
+  /members/pedidoAssociado:
+    post:
+      tags:
+        - members
+      summary: Submete um novo pedido de associação.
+      description: Envia os dados de um potencial associado para aprovação.
+      requestBody:
+        description: Dados pessoais e de associado.
+        content:
+          application/json:
+            schema:
+              required:
+                - pessoal
+                - associado
+              type: object
+              properties:
+                pessoal:
+                  type: object
+                associado:
+                  type: object
+        required: true
+      responses:
+        '200':
+          description: Pedido submetido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Pedido Enviado com Sucesso."
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Ocorreu um Erro."

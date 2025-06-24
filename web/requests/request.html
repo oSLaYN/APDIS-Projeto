@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/97e6f1480f.js" crossorigin="anonymous"></script>
+    <title>Pedido - APDIS</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@100..900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Roboto Condensed", serif;
+            font-style: normal;
+        }
+
+        body {
+            background: linear-gradient(to bottom, #2a2861, #213652, #282757);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            padding-top: 1%;
+        }
+
+        .logo {
+            width: 240px;
+            margin: 10px;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .container {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 80%;
+            max-width: 45vh;
+            height: 75vh;
+            background-color: #ffffffcb;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+            padding: 10px;
+            position: relative;
+            margin-bottom: 0.25%;
+        }
+
+        .post {
+            background: #ffffffcb;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border: 1px solid #9f9f9fc9;
+            text-align: center;
+            width: 95%;
+        }
+
+        .post h3 {
+            color: #08065e;
+            margin-bottom: 5px;
+            font-size: 200%;
+        }
+
+        .post p {
+            color: #333;
+            font-size: 100%;
+            padding-bottom: 10px;
+        }
+
+        .social-login {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .social-login .submit-btn {
+            background-color: #ffffffcb;
+            color: #070548;
+            width: 150px;
+            height: 50px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .social-login .submit-btn:hover {
+            background-color: #f0f0f0;
+            transform: scale(1.05);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .file-download .download-btn {
+            display: inline-flex;
+            align-items: center;
+            background-color: #08065e;
+            color: #ffffff;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .file-download .download-btn i {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        .file-download .download-btn:hover {
+            background-color: #0a0890;
+        }
+
+        .file-upload {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .file-upload h4 {
+            margin-bottom: 12px;
+            color: #08065e;
+            font-size: 16px;
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .file-upload .custom-file-label {
+            display: inline-flex;
+            align-items: center;
+            background-color: #08065e;
+            color: #ffffff;
+            padding: 10px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+            margin-right: 5px;
+        }
+
+        .file-upload .custom-file-label i {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        .file-upload .custom-file-label:hover {
+            background-color: #0a0890;
+        }
+
+        .file-upload .file-name {
+            font-size: 14px;
+            color: #333333;
+            margin-right: 10px;
+        }
+
+        .file-upload .upload-btn {
+            display: inline-flex;
+            align-items: center;
+            background-color: #08065e;
+            color: #ffffff;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .file-upload .upload-btn i {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        .file-upload .upload-btn:hover {
+            background-color: #0a0890;
+        }
+
+        .upload-status {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        #message {
+            padding-top: 1%;
+            font-weight: bolder;
+            text-align: center;
+            width: 100%;
+        }
+    </style>
+</head>
+<body onload="CheckSession()">
+    <img class="logo" src="/logo" alt="Logo">
+    <div class="container" id="feed"></div>
+    <div class="social-login">
+        <div id="message"></div>
+        <button onclick='window.location.href="/"' class="submit-btn">Regressar</button>
+    </div>
+    
+</body>
+<script src="script"></script>
+<script>
+    const messageBox = document.getElementById('message');
+    const params = new URLSearchParams(window.location.search);
+    var id = params.get("id");
+    if (!id) {
+        messageBox.textContent = `Nenhum ID Providenciado! \nA Redirecionar...`;
+        messageBox.style.color = 'red';
+        setTimeout(() => {
+            window.location.href = "/";
+        }, "2500");
+    }
+    document.addEventListener("DOMContentLoaded", async function() {
+        const feed = document.getElementById("feed");
+
+        try {
+            const response = await fetch(`/api/documents/getRequest?id=${id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            });
+
+            const pedido = await response.json();
+
+            if (response.ok) {
+                const post = document.createElement("div");
+                post.classList.add("post");
+                post.innerHTML = `
+                    <h3>${pedido.fullname}</h3>
+                    <p>${pedido.description}</p>
+                    ${(pedido.accepted != null) ? `
+                        <div class="file-download">
+                            <button onclick="downloadFile('${pedido.id}', '${pedido.requested}', '${pedido.documentName}')" class="download-btn">
+                                <i class="fas fa-download"></i> Descarregar Documento
+                            </button>
+                        </div>
+                    ` : `
+                        <div class="file-upload">
+                            <h4>Submeter um Ficheiro</h4>
+                            <form id="uploadForm-${pedido.id}" enctype="multipart/form-data">
+                                <input type="file" id="fileInput-${pedido.id}" name="file" accept=".pdf,.docx,.pptx,.doc,.txt" required />
+                                <label for="fileInput-${pedido.id}" id="fileLabel-${pedido.id}" class="custom-file-label">
+                                    <i class="fas fa-paperclip"></i> Escolher Ficheiro
+                                </label>
+                                <button type="button" onclick="uploadFile('${pedido.id}')" class="upload-btn">
+                                    <i class="fas fa-upload"></i> Enviar
+                                </button>
+                            </form>
+                            <div id="uploadStatus-${pedido.id}" class="upload-status"></div>
+                        </div>
+                    `}
+                `;
+                feed.appendChild(post);
+
+                if (!pedido.accepted) {
+                    const fileInput = document.getElementById(`fileInput-${pedido.id}`);
+                    const fileLabel = document.getElementById(`fileLabel-${pedido.id}`);
+
+                    fileInput.addEventListener("change", function() {
+                        const file = this.files[0];
+                        if (file) {
+                            fileLabel.innerHTML = `<i class="fas fa-check-circle"></i> Ficheiro Escolhido`;
+                            fileLabel.style.backgroundColor = "#0a0890";
+                        } else {
+                            fileLabel.innerHTML = `<i class="fas fa-paperclip"></i> Escolher Ficheiro`;
+                            fileLabel.style.backgroundColor = "#08065e";
+                        }
+                    });
+                }
+
+            } else {
+                console.error("ERROR");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    });
+</script>
+</html>
